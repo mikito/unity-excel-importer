@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c345064ecbd98473989850ee597cd1d8, type: 3}
+  m_Name: MstItems
+  m_EditorClassIdentifier: 
+  Entities:
+  - id: 1
+    name: item1
+    price: 3
+    isNotForSale: 0
+    rate: 1.1
+    category: 0
+  - id: 2
+    name: item2
+    price: 10
+    isNotForSale: 0
+    rate: 1.4
+    category: 0
+  - id: 3
+    name: item3
+    price: 25
+    isNotForSale: 0
+    rate: 1.6
+    category: 0
+  - id: 4
+    name: item4
+    price: 60
+    isNotForSale: 0
+    rate: 1.8
+    category: 1
+  - id: 5
+    name: item5
+    price: 180
+    isNotForSale: 0
+    rate: 2.1
+    category: 1
+  - id: 6
+    name: item6
+    price: 230
+    isNotForSale: 0
+    rate: 2.2
+    category: 1
+  - id: 7
+    name: item7
+    price: 310
+    isNotForSale: 0
+    rate: 2.4
+    category: 2
+  - id: 8
+    name: item8
+    price: 560
+    isNotForSale: 0
+    rate: 2.6
+    category: 2
+  - id: 9
+    name: item9
+    price: 820
+    isNotForSale: 1
+    rate: 2.8
+    category: 2
+  - id: 10
+    name: item10
+    price: 1010
+    isNotForSale: 1
+    rate: 3.5
+    category: 2
