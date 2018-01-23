@@ -71,7 +71,7 @@ public class MstItems : ScriptableObject
 }
 ```
 
-### 4. Reimport or re-save Excel
+### 4. Reimport or re-save Excel
 
 When you import or re-save Excel, a ScriptableObject with the same name as Excel is created in the same directory and the contents of Excel are imported.
 
