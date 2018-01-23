@@ -162,7 +162,7 @@ public class ExcelImporter : AssetPostprocessor
 			if(row == null) break;
 
 			ICell entryCell = row.GetCell(0); 
-			if(entryCell.CellType == CellType.Blank) break;
+			if(entryCell == null || entryCell.CellType == CellType.Blank) break;
 
 			// skip comment row
 			if(entryCell.CellType == CellType.String && entryCell.StringCellValue.StartsWith("#")) continue;
