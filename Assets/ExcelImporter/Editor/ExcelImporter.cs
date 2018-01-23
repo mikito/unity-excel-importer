@@ -107,9 +107,11 @@ public class ExcelImporter : AssetPostprocessor
 		return fieldNames;
 	}
 
-	static object CellToFieldObject(ICell cell, FieldInfo fieldInfo)
+	static object CellToFieldObject(ICell cell, FieldInfo fieldInfo, bool isFormulaEvalute = false)
 	{
-		switch (cell.CellType)
+		var type = isFormulaEvalute ? cell.CachedFormulaResultType : cell.CellType;
+
+		switch(type)
 		{
 			case CellType.String:
 				if (fieldInfo.FieldType.IsEnum) return Enum.Parse(fieldInfo.FieldType, cell.StringCellValue);
@@ -118,6 +120,9 @@ public class ExcelImporter : AssetPostprocessor
 				return cell.BooleanCellValue;
 			case CellType.Numeric:
 				return Convert.ChangeType(cell.NumericCellValue, fieldInfo.FieldType);
+			case CellType.Formula:
+				if(isFormulaEvalute) return null;
+				return CellToFieldObject(cell, fieldInfo, true); 
 			default:
 				return null;
 		}
