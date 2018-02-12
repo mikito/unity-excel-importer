@@ -110,7 +110,7 @@ public class MstItems : ScriptableObject
 You can use enum by entering the element name as string in cell.
 It is also useful to set Data Validation pull down as an element of enum in Excel.
 
-LISENCE
+Lisence
 ----------
 
 This library is under the MIT License.
