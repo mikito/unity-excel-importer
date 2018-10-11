@@ -134,8 +134,12 @@ public class ExcelImporter : AssetPostprocessor
 
 		for (int i = 0; i < columnNames.Count; i++)
 		{
-			FieldInfo entityField = entityType.GetField(columnNames[i]);
+			FieldInfo entityField = entityType.GetField(
+				columnNames[i],
+				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic 
+			);
 			if (entityField == null) continue;
+			if (entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
 
 			ICell cell = row.GetCell(i);
 
