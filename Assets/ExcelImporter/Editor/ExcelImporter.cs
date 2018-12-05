@@ -139,7 +139,7 @@ public class ExcelImporter : AssetPostprocessor
 				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic 
 			);
 			if (entityField == null) continue;
-			if (entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
+			if (!entityField.IsPublic && entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
 
 			ICell cell = row.GetCell(i);
 
