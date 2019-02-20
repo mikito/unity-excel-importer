@@ -124,6 +124,10 @@ public class ExcelImporter : AssetPostprocessor
 				if(isFormulaEvalute) return null;
 				return CellToFieldObject(cell, fieldInfo, true); 
 			default:
+				if(fieldInfo.FieldType.IsValueType)
+				{
+					return Activator.CreateInstance(fieldInfo.FieldType);
+				}
 				return null;
 		}
 	}
@@ -142,6 +146,7 @@ public class ExcelImporter : AssetPostprocessor
 			if (!entityField.IsPublic && entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
 
 			ICell cell = row.GetCell(i);
+			if (cell == null) continue;
 
 			try
 			{
