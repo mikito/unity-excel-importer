@@ -110,6 +110,30 @@ public class MstItems : ScriptableObject
 You can use enum by entering the element name as string in cell.
 It is also useful to set Data Validation pull down as an element of enum in Excel.
 
+### Log On Import
+
+When true is specified for LogOnImport of ExcelAssetAttribute, a log is output when the import process runs.
+
+```cs
+...
+[ExcelAsset(LogOnImport = true)]
+public class MstItems : ScriptableObject
+{
+...
+```
+
+### Changing name association between ExcelAsset and ExcelFile
+
+You can change the association to a specific Excel file by specifying ExcelName of ExcelAssetAttribute, 
+
+```cs
+...
+[ExcelAsset(ExcelName = "MstItemData")]
+public class MstItems : ScriptableObject
+{
+...
+```
+
 Lisence
 ----------
 
