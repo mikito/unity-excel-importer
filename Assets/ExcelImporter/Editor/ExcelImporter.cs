@@ -17,6 +17,8 @@ public class ExcelImporter : AssetPostprocessor
 		public ExcelAssetAttribute Attribute { get; set; } 
 	}
 
+	static List<ExcelAssetInfo> cachedInfos = null; // Clear on compile.
+
 	static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 	{
 		bool imported = false;
@@ -24,10 +26,12 @@ public class ExcelImporter : AssetPostprocessor
 		{
 			if(Path.GetExtension(path) == ".xls" || Path.GetExtension(path) == ".xlsx") 
 			{
+				if(cachedInfos == null) cachedInfos = FindExcelAssetInfos();
+
 				var excelName = Path.GetFileNameWithoutExtension(path);
 				if(excelName.StartsWith("~$")) continue;
 
-				var info = FindAssetTypeByExcelName(excelName);
+				ExcelAssetInfo info = cachedInfos.Find(i => i.AssetType.Name == excelName);
 
 				if(info == null)
 				{
@@ -47,25 +51,25 @@ public class ExcelImporter : AssetPostprocessor
 		}
 	}
 
-	static ExcelAssetInfo FindAssetTypeByExcelName(string excelName)
+	static List<ExcelAssetInfo> FindExcelAssetInfos()
 	{
+		var list = new List<ExcelAssetInfo>();
 		foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
 		{
-			var type = assembly.GetType(excelName);
-			if(type == null) continue;
-
-			var attributes = type.GetCustomAttributes(typeof(ExcelAssetAttribute), false);
-			if(attributes.Length == 0) continue;
-
-			var attribute = (ExcelAssetAttribute)attributes[0];
-
-			return new ExcelAssetInfo()
+			foreach(var type in assembly.GetTypes())
 			{
-				AssetType = type,
-				Attribute = attribute
-			};
+				var attributes = type.GetCustomAttributes(typeof(ExcelAssetAttribute), false);
+				if(attributes.Length == 0) continue;
+				var attribute = (ExcelAssetAttribute)attributes[0];
+				var info = new ExcelAssetInfo()
+				{
+					AssetType = type,
+					Attribute = attribute
+				};
+				list.Add(info);
+			}
 		}
-		return null;
+		return list;
 	}
 
 	static UnityEngine.Object LoadOrCreateAsset(string assetPath, Type assetType)
