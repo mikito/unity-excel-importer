@@ -132,7 +132,7 @@ public class ExcelImporter : AssetPostprocessor
 		}
 	}
 
-	static object CreateEntityFromRow(IRow row, List<string> columnNames, Type entityType)
+	static object CreateEntityFromRow(IRow row, List<string> columnNames, Type entityType, string sheetName)
 	{
 		var entity = Activator.CreateInstance(entityType);
 
@@ -155,7 +155,7 @@ public class ExcelImporter : AssetPostprocessor
 			}
 			catch
 			{
-				throw new Exception(string.Format("Invalid excel cell type at row {0}, column {1}.", row.RowNum, cell.ColumnIndex));
+				throw new Exception(string.Format("Invalid excel cell type at row {0}, column {1}, {2} sheet.", row.RowNum, cell.ColumnIndex, sheetName));
 			}
 		}
 		return entity;
@@ -181,7 +181,7 @@ public class ExcelImporter : AssetPostprocessor
 			// skip comment row
 			if(entryCell.CellType == CellType.String && entryCell.StringCellValue.StartsWith("#")) continue;
 
-			var entity = CreateEntityFromRow(row, excelColumnNames, entityType);
+			var entity = CreateEntityFromRow(row, excelColumnNames, entityType, sheet.SheetName);
 			listAddMethod.Invoke(list, new object[] { entity });
 		}
 		return list;
