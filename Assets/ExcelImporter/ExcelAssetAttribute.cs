@@ -7,4 +7,5 @@ using System;
 public class ExcelAssetAttribute : Attribute
 {
 	public string AssetPath { get; set; }
+	public string ExcelName { get; set; }
 }

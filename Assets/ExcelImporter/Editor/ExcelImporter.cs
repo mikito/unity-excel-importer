@@ -15,6 +15,13 @@ public class ExcelImporter : AssetPostprocessor
 	{
 		public Type AssetType { get; set; }
 		public ExcelAssetAttribute Attribute { get; set; } 
+		public string ExcelName
+		{
+			get
+			{
+				return string.IsNullOrEmpty(Attribute.ExcelName) ? AssetType.Name : Attribute.ExcelName;
+			}
+		}
 	}
 
 	static List<ExcelAssetInfo> cachedInfos = null; // Clear on compile.
@@ -31,7 +38,7 @@ public class ExcelImporter : AssetPostprocessor
 				var excelName = Path.GetFileNameWithoutExtension(path);
 				if(excelName.StartsWith("~$")) continue;
 
-				ExcelAssetInfo info = cachedInfos.Find(i => i.AssetType.Name == excelName);
+				ExcelAssetInfo info = cachedInfos.Find(i => i.ExcelName == excelName);
 
 				if(info == null)
 				{
