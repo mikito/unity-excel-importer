@@ -32,6 +32,7 @@ sysinfo.txt
 
 .vscode/
 
+.DS_Store
 
 ~$*.xlsx
 ~$*.xlsx.meta
