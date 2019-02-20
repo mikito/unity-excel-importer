@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 8
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -33,19 +34,19 @@ MonoBehaviour:
   - id: 4
     name: item4
     price: 60
-    isNotForSale: 0
+    isNotForSale: 1
     rate: 4.14
     category: 1
   - id: 5
     name: item5
     price: 180
-    isNotForSale: 0
+    isNotForSale: 1
     rate: 4.83
     category: 1
   - id: 6
     name: item6
     price: 230
-    isNotForSale: 0
+    isNotForSale: 1
     rate: 5.06
     category: 1
   - id: 7
@@ -57,13 +58,13 @@ MonoBehaviour:
   - id: 8
     name: item8
     price: 560
-    isNotForSale: 0
+    isNotForSale: 1
     rate: 5.98
     category: 2
   - id: 9
     name: item9
     price: 820
-    isNotForSale: 1
+    isNotForSale: 0
     rate: 6.44
     category: 2
   - id: 10
