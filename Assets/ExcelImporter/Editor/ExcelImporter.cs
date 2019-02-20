@@ -40,11 +40,7 @@ public class ExcelImporter : AssetPostprocessor
 
 				ExcelAssetInfo info = cachedInfos.Find(i => i.ExcelName == excelName);
 
-				if(info == null)
-				{
-					Debug.LogWarning("ExcelAssetScript is not found. Select " + path + " and excute 'Create/ExcelAssetScript' from create menu.");
-					continue;
-				}
+				if(info == null) continue;
 
 				ImportExcel(path, info);
 				imported = true;
@@ -216,6 +212,7 @@ public class ExcelImporter : AssetPostprocessor
 		IWorkbook book = LoadBook(excelPath);
 
 		var assetFields = info.AssetType.GetFields();
+		int sheetCount = 0;
 
 		foreach (var assetField in assetFields)
 		{
@@ -230,6 +227,12 @@ public class ExcelImporter : AssetPostprocessor
 
 			object entities = GetEntityListFromSheet(sheet, entityType);
 			assetField.SetValue(asset, entities);
+			sheetCount++;
+		}
+
+		if(info.Attribute.LogOnImport)
+		{
+			Debug.Log(string.Format("Imported {0} sheets form {1}.", sheetCount, excelPath));
 		}
 
 		EditorUtility.SetDirty(asset);
