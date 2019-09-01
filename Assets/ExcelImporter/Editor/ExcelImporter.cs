@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using NPOI.HSSF.UserModel;
@@ -114,26 +115,26 @@ public class ExcelImporter : AssetPostprocessor
 		return fieldNames;
 	}
 
-	static object CellToFieldObject(ICell cell, FieldInfo fieldInfo, bool isFormulaEvalute = false)
+	static object CellToFieldObject(ICell cell, Type fieldType, bool isFormulaEvalute = false)
 	{
 		var type = isFormulaEvalute ? cell.CachedFormulaResultType : cell.CellType;
 
 		switch(type)
 		{
 			case CellType.String:
-				if (fieldInfo.FieldType.IsEnum) return Enum.Parse(fieldInfo.FieldType, cell.StringCellValue);
+				if (fieldType.IsEnum) return Enum.Parse(fieldType, cell.StringCellValue);
 				else return cell.StringCellValue;
 			case CellType.Boolean:
 				return cell.BooleanCellValue;
 			case CellType.Numeric:
-				return Convert.ChangeType(cell.NumericCellValue, fieldInfo.FieldType);
+				return Convert.ChangeType(cell.NumericCellValue, fieldType);
 			case CellType.Formula:
-				if(isFormulaEvalute) return null;
-				return CellToFieldObject(cell, fieldInfo, true); 
+				if (isFormulaEvalute) return null;
+				return CellToFieldObject(cell, fieldType, true);
 			default:
-				if(fieldInfo.FieldType.IsValueType)
+				if (fieldType.IsValueType)
 				{
-					return Activator.CreateInstance(fieldInfo.FieldType);
+					return Activator.CreateInstance(fieldType);
 				}
 				return null;
 		}
@@ -147,18 +148,28 @@ public class ExcelImporter : AssetPostprocessor
 		{
 			FieldInfo entityField = entityType.GetField(
 				columnNames[i],
-				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic 
+				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
 			);
-			if (entityField == null) continue;
-			if (!entityField.IsPublic && entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
+			PropertyInfo entityProperty = entityType.GetProperty(columnNames[i], BindingFlags.Instance | BindingFlags.Public);
+
+			if (entityField == null && entityProperty == null) continue;
+			if (entityProperty == null && !entityField.IsPublic && entityField.GetCustomAttributes(typeof(SerializeField), false).Length == 0) continue;
 
 			ICell cell = row.GetCell(i);
 			if (cell == null) continue;
 
 			try
 			{
-				object fieldValue = CellToFieldObject(cell, entityField);
-				entityField.SetValue(entity, fieldValue);
+				if (entityField == null)
+				{
+					object propertyValue = CellToFieldObject(cell, entityProperty.PropertyType);
+					entityProperty.SetValue(entity, propertyValue, null);
+				}
+				else
+				{
+					object fieldValue = CellToFieldObject(cell, entityField.FieldType);
+					entityField.SetValue(entity, fieldValue);
+				}
 			}
 			catch
 			{

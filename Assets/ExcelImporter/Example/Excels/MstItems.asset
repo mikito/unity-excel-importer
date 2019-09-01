@@ -19,57 +19,67 @@ MonoBehaviour:
     isNotForSale: 0
     rate: 2.3
     category: 0
+    subIds: 010000000200000003000000
   - id: 2
     name: item2
     price: 10
     isNotForSale: 0
     rate: 3.22
     category: 0
+    subIds: 040000000500000006000000
   - id: 3
     name: item3
     price: 25
     isNotForSale: 0
     rate: 3.68
     category: 0
+    subIds: 070000000800000009000000
   - id: 4
     name: item4
     price: 60
     isNotForSale: 1
     rate: 4.14
     category: 1
+    subIds: 020000000300000004000000
   - id: 5
     name: item5
     price: 180
     isNotForSale: 1
     rate: 4.83
     category: 1
+    subIds: 050000000600000007000000
   - id: 6
     name: item6
     price: 230
     isNotForSale: 1
     rate: 5.06
     category: 1
+    subIds: 060000000700000008000000
   - id: 7
     name: item7
     price: 310
     isNotForSale: 0
     rate: 5.52
     category: 2
+    subIds: 030000000500000007000000
   - id: 8
     name: item8
     price: 560
     isNotForSale: 1
     rate: 5.98
     category: 2
+    subIds: 010000000500000007000000
   - id: 9
     name: item9
     price: 820
     isNotForSale: 0
     rate: 6.44
     category: 2
+    subIds: 020000000400000009000000
   - id: 10
     name: item10
     price: 1010
     isNotForSale: 1
     rate: 8.05
     category: 2
+    subIds: 010000000200000004000000

@@ -27,13 +27,14 @@ public class Example : MonoBehaviour
 	string DescribeMstItemEntity(MstItemEntity entity)
 	{
 		return string.Format(
-			"{0} : {1}, {2}, {3}, {4}, {5}",
+			"{0} : {1}, {2}, {3}, {4}, {5}, {6}",
 			entity.id,
 			entity.name,
 			entity.price,
 			entity.isNotForSale,
 			entity.rate,
-			entity.category
+			entity.category,
+			string.Join(", ", entity.subIds.Select(i => i.ToString()).ToArray())
 		);
 	}
 }
