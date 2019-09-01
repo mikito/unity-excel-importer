@@ -114,26 +114,26 @@ public class ExcelImporter : AssetPostprocessor
 		return fieldNames;
 	}
 
-	static object CellToFieldObject(ICell cell, FieldInfo fieldInfo, bool isFormulaEvalute = false)
+	static object CellToFieldObject(ICell cell, Type fieldType, bool isFormulaEvalute = false)
 	{
 		var type = isFormulaEvalute ? cell.CachedFormulaResultType : cell.CellType;
 
 		switch(type)
 		{
 			case CellType.String:
-				if (fieldInfo.FieldType.IsEnum) return Enum.Parse(fieldInfo.FieldType, cell.StringCellValue);
+				if (fieldType.IsEnum) return Enum.Parse(fieldType, cell.StringCellValue);
 				else return cell.StringCellValue;
 			case CellType.Boolean:
 				return cell.BooleanCellValue;
 			case CellType.Numeric:
-				return Convert.ChangeType(cell.NumericCellValue, fieldInfo.FieldType);
+				return Convert.ChangeType(cell.NumericCellValue, fieldType);
 			case CellType.Formula:
-				if(isFormulaEvalute) return null;
-				return CellToFieldObject(cell, fieldInfo, true); 
+				if (isFormulaEvalute) return null;
+				return CellToFieldObject(cell, fieldType, true);
 			default:
-				if(fieldInfo.FieldType.IsValueType)
+				if (fieldType.IsValueType)
 				{
-					return Activator.CreateInstance(fieldInfo.FieldType);
+					return Activator.CreateInstance(fieldType);
 				}
 				return null;
 		}
@@ -157,16 +157,86 @@ public class ExcelImporter : AssetPostprocessor
 
 			try
 			{
-				object fieldValue = CellToFieldObject(cell, entityField);
-				entityField.SetValue(entity, fieldValue);
+				// TODO: Hash and Object
+				if(entityField.FieldType.IsArray ||
+					( entityField.FieldType.IsGenericType && entityField.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+				) 
+				{
+					string rawValue = (string)CellToFieldObject(cell, typeof(string));
+					var fieldValue = SerializeField(rawValue, entityField.FieldType);
+					entityField.SetValue(entity, fieldValue);
+				}
+				else
+				{
+					object fieldValue = CellToFieldObject(cell, entityField.FieldType);
+					entityField.SetValue(entity, fieldValue);
+				}
 			}
 			catch
 			{
-				throw new Exception(string.Format("Invalid excel cell type at row {0}, column {1}, {2} sheet.", row.RowNum, cell.ColumnIndex, sheetName));
+				throw new Exception(
+					string.Format("Invalid excel cell type at row {0}, column {1}, {2} sheet.",
+					row.RowNum,
+					cell.ColumnIndex,
+					sheetName));
 			}
 		}
 		return entity;
 	}
+
+	static object SerializeField(string value, Type type)
+	{
+		if(type.IsArray || ( type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)))
+		{
+			if(!value.StartsWith("["))
+			{
+				value = "[" + value + "]";
+			}
+			Type elementType = null;
+			if(type.IsArray)
+			{
+				elementType = type.GetElementType();
+			}else
+			{
+				var types = type.GetGenericArguments();
+				elementType = types[0];
+			}
+			return JsonHelper.ListFromJson(value, elementType, !type.IsArray);
+		}
+
+		return JsonUtility.FromJson(value, type);
+	}
+
+	public class JsonHelper
+    {
+        public static object ListFromJson(string json, Type type, bool isGenericType)
+        {
+            var newJson = "{ \"elements\": " + json + "}";
+
+			Type wrapperType = null;
+			if(isGenericType)
+			{
+				wrapperType = typeof(ListWrapper<>).MakeGenericType(type);
+			}else{
+				wrapperType = typeof(ArrayWrapper<>).MakeGenericType(type);
+			}
+            var wrapperObject = JsonUtility.FromJson(newJson, wrapperType);
+			var fieldInfo = wrapperType.GetField("elements");
+			return fieldInfo.GetValue(wrapperObject);
+        }
+
+        [System.Serializable]
+        public class ArrayWrapper<T>
+        {
+            public T[] elements;
+        }
+
+        [System.Serializable]
+        public class ListWrapper<T>
+        {
+            public List<T> elements;
+        }
+    }
 
 	static object GetEntityListFromSheet(ISheet sheet, Type entityType)
 	{
