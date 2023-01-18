@@ -1,0 +1,17 @@
+{
+    "name": "ExcelImporter.Editor",
+    "references": [
+        "GUID:4a82e496084bb4f3fb60aebcaa2f5361"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
