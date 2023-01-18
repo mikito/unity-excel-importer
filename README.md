@@ -6,7 +6,7 @@ Extension for auto import data from xls, xlsx to custom ScriptableObject in Unit
 
 ### Package Manager
 
-Add the following entry to Package/manifest.json or Package Manager.
+Add the following entry to Packages/manifest.json or Package Manager.
 
 ```json
 {
